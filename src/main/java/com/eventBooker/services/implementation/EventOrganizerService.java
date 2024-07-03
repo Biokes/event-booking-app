@@ -2,7 +2,9 @@ package com.eventBooker.services.implementation;
 
 import com.eventBooker.data.models.Event;
 import com.eventBooker.dtos.request.AddTicketRequest;
+import com.eventBooker.dtos.request.DiscountTicketRequest;
 import com.eventBooker.dtos.response.AddTicketResponse;
+import com.eventBooker.dtos.response.DiscountTicketResponse;
 import com.eventBooker.exception.EventException;
 import com.eventBooker.services.interfaces.EventService;
 import com.eventBooker.services.interfaces.OrganizerService;
@@ -31,8 +33,6 @@ public class EventOrganizerService implements OrganizerService {
     private PasswordEncoder encoder;
     @Autowired
     private EventService eventService;
-//    @Autowired
-//    private TicketService ticketService;
     @Override
     public OrganizerResponse register(OrganizerRegisterRequest request) {
         try {
@@ -53,6 +53,19 @@ public class EventOrganizerService implements OrganizerService {
     @Override
     public AddTicketResponse addTicketToEvent(AddTicketRequest addTicketRequest) {
          return eventService.createTicket(addTicketRequest);
+    }
+
+    @Override
+    public DiscountTicketResponse discountTicket(DiscountTicketRequest request) {
+        Organizer organizer = organizerRepository.findByEmail(request.getEmail())
+                .orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
+        comparePassword(organizer,request.getPassword());
+        return eventService.discountTicket(request);
+    }
+
+    private void comparePassword(Organizer organizer,String password) {
+        if(!encoder.matches(password, organizer.getPassword()))
+            throw new EventException(INVALID_DETAILS.getMessage());
     }
 
     private OrganizerResponse registerOrganizer(OrganizerRegisterRequest request) {

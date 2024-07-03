@@ -1,11 +1,10 @@
 package com.eventBooker.dtos.request;
 
 import com.eventBooker.data.models.TicketType;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Positive;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -13,11 +12,17 @@ import java.math.BigDecimal;
 @Getter
 @Builder
 @AllArgsConstructor
-public class AddTicketRequest {
+@NoArgsConstructor
+public class BuyTicketRequest {
     @NotNull
-    private Long eventId;
-    @NotNull
-    private TicketType ticketType;
+    private String name;
     @NotNull
     private BigDecimal price;
+    @NotNull
+    private Long eventId;
+    @Positive
+    @Min(value=18)
+    private int age;
+    @NotNull
+    private TicketType ticketType;
 }
