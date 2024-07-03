@@ -1,24 +1,20 @@
 package com.eventBooker.services.implementation;
 
 import com.eventBooker.data.models.Event;
-import com.eventBooker.dtos.request.AddTicketRequest;
-import com.eventBooker.dtos.request.DiscountTicketRequest;
-import com.eventBooker.dtos.response.AddTicketResponse;
-import com.eventBooker.dtos.response.DiscountTicketResponse;
+import com.eventBooker.dtos.request.*;
+import com.eventBooker.dtos.response.*;
 import com.eventBooker.exception.EventException;
 import com.eventBooker.services.interfaces.EventService;
 import com.eventBooker.services.interfaces.OrganizerService;
 import com.eventBooker.data.models.Organizer;
 import com.eventBooker.data.repo.OrganizerRepository;
-import com.eventBooker.dtos.request.CreateEventRequest;
-import com.eventBooker.dtos.request.OrganizerRegisterRequest;
-import com.eventBooker.dtos.response.CreateEventResponse;
-import com.eventBooker.dtos.response.OrganizerResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.eventBooker.exception.Messages.DETAILS_ALREADY_EXIST;
 import static com.eventBooker.exception.Messages.INVALID_DETAILS;
@@ -37,7 +33,8 @@ public class EventOrganizerService implements OrganizerService {
     public OrganizerResponse register(OrganizerRegisterRequest request) {
         try {
             return registerOrganizer(request);
-        }catch (DataIntegrityViolationException exception){
+        }
+        catch (DataIntegrityViolationException exception){
             throw new EventException(DETAILS_ALREADY_EXIST.getMessage());
         }
     }
@@ -61,6 +58,13 @@ public class EventOrganizerService implements OrganizerService {
                 .orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
         comparePassword(organizer,request.getPassword());
         return eventService.discountTicket(request);
+    }
+
+    @Override
+    public List<AttendeeResponse> getAllEventAttendees(ViewEventsRequest request) {
+        Organizer organizer =organizerRepository.findByEmail(request.getEmail())
+                .orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
+        return eventService.findAllByOrganizer(organizer);
     }
 
     private void comparePassword(Organizer organizer,String password) {

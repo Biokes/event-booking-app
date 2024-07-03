@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.eventBooker.data.models.EventType.WEDDING;
 import static com.eventBooker.data.models.TicketType.REGULAR;
@@ -81,7 +82,14 @@ public class OrganizerTest {
     }
     @Test
     void testOrganizerCanViewEventsAttendees(){
-        List<AttendessResponse> response =
+        ViewEventsRequest request = ViewEventsRequest.builder().email("abbey@gmail.com").build();
+        List<AttendeeResponse> response = organizerService.getAllEventAttendees(request);
+        response.forEach(System.out::println);
+        assertNotNull(response);
     }
+    @Test
+    void testOrganizerCanReserveTicket(){
+        ReserveTicket reserveTicket = ReserveTicket.builder().build();
 
+    }
 }

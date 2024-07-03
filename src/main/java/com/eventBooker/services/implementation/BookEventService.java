@@ -9,6 +9,7 @@ import com.eventBooker.dtos.request.AddTicketRequest;
 import com.eventBooker.dtos.request.CreateEventRequest;
 import com.eventBooker.dtos.request.DiscountTicketRequest;
 import com.eventBooker.dtos.response.AddTicketResponse;
+import com.eventBooker.dtos.response.AttendeeResponse;
 import com.eventBooker.dtos.response.DiscountTicketResponse;
 import com.eventBooker.exception.EventException;
 import com.eventBooker.services.interfaces.EventService;
@@ -16,8 +17,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.eventBooker.exception.Messages.INVALID_DETAILS;
-import static com.eventBooker.exception.Messages.TICKET_ALREADY_EXIST;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.eventBooker.exception.Messages.*;
 
 @Service
 public class BookEventService implements EventService {
@@ -33,7 +36,6 @@ public class BookEventService implements EventService {
         event.setOrganizer(organizer);
         return eventRepository.save(event);
     }
-
     @Override
     public AddTicketResponse createTicket(AddTicketRequest addTicketRequest) {
         Event event = eventRepository.findById(addTicketRequest.getEventId())
@@ -44,7 +46,6 @@ public class BookEventService implements EventService {
         ticket = ticketRepo.save(ticket);
         return modelMapper.map(ticket, AddTicketResponse.class);
     }
-
     @Override
     public DiscountTicketResponse discountTicket(DiscountTicketRequest request) {
         Event event = eventRepository.findById(request.getEventId()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
@@ -52,6 +53,15 @@ public class BookEventService implements EventService {
         ticket.setPrice(ticket.getPrice().subtract(request.getDiscountPrice()));
         ticket = ticketRepo.save(ticket);
         return modelMapper.map(ticket, DiscountTicketResponse.class);
+    }
+
+    @Override
+    public List<AttendeeResponse> findAllByOrganizer(Organizer organizer) {
+        List<Event> events = eventRepository.findAllByOrganizer(organizer);
+        if(events.isEmpty())throw new EventException(NO_TICKET_BOOKED.getMessage());
+        List<AttendeeResponse> response = new ArrayList<>();
+        events.forEach(event ->{response.add(modelMapper.map(event,AttendeeResponse.class));});
+        return response;
     }
 
     private void checkDuplicateTicket(AddTicketRequest addTicketRequest, Event event) {
