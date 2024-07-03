@@ -2,13 +2,10 @@ package com.eventBooker.ServicesTest;
 
 import com.eventBooker.data.models.TicketType;
 import com.eventBooker.dtos.request.*;
-import com.eventBooker.dtos.response.AddTicketResponse;
-import com.eventBooker.dtos.response.DiscountTicketResponse;
+import com.eventBooker.dtos.response.*;
 import com.eventBooker.exception.EventException;
 import com.eventBooker.services.interfaces.AttendeeService;
 import com.eventBooker.services.interfaces.OrganizerService;
-import com.eventBooker.dtos.response.CreateEventResponse;
-import com.eventBooker.dtos.response.OrganizerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +74,14 @@ public class OrganizerTest {
                 .ticketType(REGULAR).name("abbey").age(80).build();
         assertThrows(EventException.class,()->attendeeService.bookTicket(request));
         request.setTicketType(VVIP);
+        BookTicketResponse response = attendeeService.bookTicket(request);
+        assertNotNull(response);
+        assertNotNull(response.getEndTime());
+        assertNotNull(response.getStartTime());
+    }
+    @Test
+    void testOrganizerCanViewEventsAttendees(){
+        List<AttendessResponse> response =
     }
 
 }

@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,5 +26,4 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "event_organizers_id")
     private Organizer organizer;
-
 }
