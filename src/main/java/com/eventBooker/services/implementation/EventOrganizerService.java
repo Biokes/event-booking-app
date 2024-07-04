@@ -39,10 +39,10 @@ public class EventOrganizerService implements OrganizerService {
         }
     }
     @Override
-    public CreateEventResponse createEvent(CreateEventRequest createRequest) {
+    public EventResponse createEvent(CreateEventRequest createRequest) {
         Organizer  organizer = organizerRepository.findByEmail(createRequest.getEmail()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
         Event event = eventService.createEvent(createRequest,organizer);
-        CreateEventResponse response = modelMapper.map(event, CreateEventResponse.class);
+        EventResponse response = modelMapper.map(event, EventResponse.class);
         response.setEmail(organizer.getEmail());
         return response;
     }
@@ -61,10 +61,16 @@ public class EventOrganizerService implements OrganizerService {
     }
 
     @Override
-    public List<AttendeeResponse> getAllEventAttendees(ViewEventsRequest request) {
+    public List<EventResponse> getAllEventAttendees(ViewEventsRequest request) {
         Organizer organizer =organizerRepository.findByEmail(request.getEmail())
                 .orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
-        return eventService.findAllByOrganizer(organizer);
+        return eventService.viewAllOrganizerEvents(organizer);
+    }
+
+    @Override
+    public EventResponse reserveTicket(ReserveTicket reserveTicket) {
+       Event event =  eventService.findEventById(reserveTicket.getEventId());
+        return eventService.reserveTicket(reserveTicket,event);
     }
 
     private void comparePassword(Organizer organizer,String password) {

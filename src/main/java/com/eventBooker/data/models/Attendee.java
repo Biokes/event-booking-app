@@ -3,6 +3,7 @@ package com.eventBooker.data.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static com.eventBooker.data.models.Role.ATTENDEE;
 import static jakarta.persistence.GenerationType.AUTO;
 
 @Setter
@@ -20,4 +21,7 @@ public class Attendee{
     private int age;
     @OneToOne
     private Ticket ticket;
+    @Setter(AccessLevel.NONE)
+    @Enumerated(EnumType.STRING)
+    private Role role = ATTENDEE;
 }

@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateEventRequest {
+public class    CreateEventRequest {
     private EventType eventType;
     @Future
     @JsonSerialize(using = LocalDateSerializer.class)

@@ -20,5 +20,7 @@ public class Ticket {
     private TicketType ticketType;
     @ManyToOne
     private Event event;
+    private int total;
+    private int reserved;
     private BigDecimal  price;
 }

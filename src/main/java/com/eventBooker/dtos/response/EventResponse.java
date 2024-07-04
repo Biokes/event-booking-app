@@ -1,19 +1,22 @@
 package com.eventBooker.dtos.response;
 
 import com.eventBooker.data.models.EventType;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class CreateEventResponse {
+public class EventResponse {
     private Long id;
     private EventType eventType;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String email;
+    private Long total;
+    private int reserved;
 }

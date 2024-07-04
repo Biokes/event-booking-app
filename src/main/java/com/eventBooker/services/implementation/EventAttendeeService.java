@@ -12,10 +12,12 @@ import com.eventBooker.services.interfaces.AttendeeService;
 import com.eventBooker.services.interfaces.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 import static com.eventBooker.exception.Messages.INVALID_DETAILS;
+import static com.eventBooker.exception.Messages.NO_AVAILABLE_TICKET;
 
 @Service
 public class EventAttendeeService implements AttendeeService {
@@ -24,12 +26,25 @@ public class EventAttendeeService implements AttendeeService {
     @Autowired
     private EventRepository eventRepository;
     @Override
+    @Transactional
     public BookTicketResponse bookTicket(BuyTicketRequest request){
        Event event = eventRepository.findById(request.getEventId()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
-       Ticket ticket = ticketRepository.findByEventAndTicketType(event,request.getTicketType()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
-       validatePrice(request.getPrice(),ticket.getPrice());
-       Attendee attendee = Attendee.builder().age(request.getAge()).name(request.getName()).ticket(ticket).build();
+        Ticket ticket = ticketRepository.findByEventAndTicketType(event,request.getTicketType()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
+        validateAndSell(request, ticket);
+        Attendee attendee = Attendee.builder().age(request.getAge()).name(request.getName()).ticket(ticket).build();
        return BookTicketResponse.builder().id(attendee.getId()).startTime(event.getStartDate()).endTime(event.getEndTime()).ticketType(ticket.getTicketType()).build();
+    }
+
+    private void validateAndSell(BuyTicketRequest request, Ticket ticket) {
+        validateTicketBooking(ticket);
+        validatePrice(request.getPrice(), ticket.getPrice());
+        ticket.setTotal(ticket.getTotal()-1);
+        ticketRepository.save(ticket);
+    }
+
+    private void validateTicketBooking(Ticket ticket) {
+        if(ticket.getTotal()==0)
+            throw new EventException(NO_AVAILABLE_TICKET.getMessage());
     }
 
     private void validatePrice(BigDecimal price, BigDecimal price1) {
