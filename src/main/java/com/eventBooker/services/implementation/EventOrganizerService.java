@@ -70,7 +70,7 @@ public class EventOrganizerService implements OrganizerService {
     @Override
     public EventResponse reserveTicket(ReserveTicket reserveTicket) {
        Event event =  eventService.findEventById(reserveTicket.getEventId());
-        return eventService.reserveTicket(reserveTicket,event);
+        return eventService.reserveTicketsForAttendees(reserveTicket,event);
     }
 
     private void comparePassword(Organizer organizer,String password) {

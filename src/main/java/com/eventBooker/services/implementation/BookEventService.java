@@ -81,7 +81,7 @@ public class BookEventService implements EventService {
     }
     @Override
     @Transactional
-    public EventResponse reserveTicket(ReserveTicket reserveTicket, Event event) {
+    public EventResponse reserveTicketsForAttendees(ReserveTicket reserveTicket, Event event) {
         Ticket ticket = ticketRepo.findByEventAndTicketType(event,reserveTicket.getTicketType()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
         checkTicket(ticket);
         checkAndReserve(reserveTicket, ticket);
