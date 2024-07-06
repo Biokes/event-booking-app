@@ -1,6 +1,6 @@
 package com.eventBooker.dtos.response;
 
-import com.eventBooker.data.models.TicketType;
+import com.eventBooker.data.enums.TicketType;
 import lombok.Getter;
 import lombok.Setter;
 

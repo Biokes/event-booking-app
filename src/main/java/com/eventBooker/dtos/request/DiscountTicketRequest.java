@@ -1,7 +1,6 @@
 package com.eventBooker.dtos.request;
 
-import com.eventBooker.data.models.EventType;
-import com.eventBooker.data.models.TicketType;
+import com.eventBooker.data.enums.TicketType;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

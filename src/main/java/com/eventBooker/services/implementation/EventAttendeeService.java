@@ -5,8 +5,10 @@ import com.eventBooker.data.models.Event;
 import com.eventBooker.data.models.Ticket;
 import com.eventBooker.data.repo.EventRepository;
 import com.eventBooker.data.repo.TicketRepository;
+import com.eventBooker.dtos.request.AttendeeReserveRequest;
 import com.eventBooker.dtos.request.BuyTicketRequest;
 import com.eventBooker.dtos.response.BookTicketResponse;
+import com.eventBooker.dtos.response.ReserveTicketResponse;
 import com.eventBooker.exception.EventException;
 import com.eventBooker.services.interfaces.AttendeeService;
 import com.eventBooker.services.interfaces.EventService;
@@ -33,6 +35,14 @@ public class EventAttendeeService implements AttendeeService {
         validateAndSell(request, ticket);
         Attendee attendee = Attendee.builder().age(request.getAge()).name(request.getName()).ticket(ticket).build();
        return BookTicketResponse.builder().id(attendee.getId()).startTime(event.getStartDate()).endTime(event.getEndTime()).ticketType(ticket.getTicketType()).build();
+    }
+
+    @Override
+    public ReserveTicketResponse reserveTicket(AttendeeReserveRequest request) {
+        Event event = eventRepository.findById(request.getEventId()).orElseThrow(EventException::new);
+        Ticket ticket = ticketRepository.findByEventAndTicketType(event,request.getTicketType()).orElseThrow(EventException::new);
+
+        return null;
     }
 
     private void validateAndSell(BuyTicketRequest request, Ticket ticket) {

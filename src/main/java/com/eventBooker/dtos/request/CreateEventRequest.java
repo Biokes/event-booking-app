@@ -1,6 +1,6 @@
 package com.eventBooker.dtos.request;
 
-import com.eventBooker.data.models.EventType;
+import com.eventBooker.data.enums.EventType;
 import com.eventBooker.validator.AfterDateValidator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

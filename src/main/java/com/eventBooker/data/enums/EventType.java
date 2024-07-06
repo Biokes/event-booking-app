@@ -1,4 +1,4 @@
-package com.eventBooker.data.models;
+package com.eventBooker.data.enums;
 
 public enum EventType {
     WEDDING,BIRTHDAY,BURIAL,OTHERS

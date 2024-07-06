@@ -1,5 +1,6 @@
 package com.eventBooker.data.models;
 
+import com.eventBooker.data.enums.TicketType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,5 @@ public class Ticket {
     @ManyToOne
     private Event event;
     private int total;
-    private int reserved;
     private BigDecimal  price;
 }

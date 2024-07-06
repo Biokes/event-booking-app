@@ -1,7 +1,6 @@
 package com.eventBooker.dtos.response;
 
-import com.eventBooker.data.models.Ticket;
-import com.eventBooker.data.models.TicketType;
+import com.eventBooker.data.enums.TicketType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

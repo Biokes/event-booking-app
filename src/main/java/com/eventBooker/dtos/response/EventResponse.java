@@ -1,6 +1,6 @@
 package com.eventBooker.dtos.response;
 
-import com.eventBooker.data.models.EventType;
+import com.eventBooker.data.enums.EventType;
 import lombok.*;
 
 import java.time.LocalDateTime;

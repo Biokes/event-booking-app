@@ -16,9 +16,9 @@ public class SecureService implements UserDetailsService {
     private final OrganizerService organizerService;
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        try{
-            Organizer user =   organizerService.findOrganizerByEmail(email);
-        }
-
+//        try{
+//            Organizer user =   organizerService.findOrganizerByEmail(email);
+//        }
+        return null;
     }
 }

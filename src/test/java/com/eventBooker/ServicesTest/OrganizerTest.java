@@ -14,8 +14,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.eventBooker.data.models.EventType.WEDDING;
-import static com.eventBooker.data.models.TicketType.*;
+import static com.eventBooker.data.enums.EventType.WEDDING;
+import static com.eventBooker.data.enums.TicketType.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -97,8 +98,15 @@ public class OrganizerTest {
         assertNotNull(response.getEndDate());
         assertNotNull(response.getStartDate());
     }
-//    @Test
-//    void testOrganizerCanCreateGuestList(){
-//        GuestListRequest request = GuestListRequest.builder().build();
-//    }
+    @Test
+    void testAttendeesBookTicketForReservation(){
+        AttendeeReserveRequest request = AttendeeReserveRequest.builder()
+                .eventId(3L).attendeeName("Abbey").ticketType(VIP).build();
+        ReserveTicketResponse response = attendeeService.reserveTicket(request);
+        assertNotNull(response);
+        assertThat(response.getStartDate().toString()).isEqualTo("2023-12-03T10:15:30");
+        assertThat(response.getEndTime().toString()).isEqualTo("2023-12-03T10:15:30");
+        assertThat(response.getEventType()).isEqualTo(WEDDING);
+        assertThat(response.getEventId()).isEqualTo(1L);
+    }
 }

@@ -1,14 +1,13 @@
 package com.eventBooker.data.models;
 
+import com.eventBooker.data.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.eventBooker.data.models.Role.ORGANIZER;
+import static com.eventBooker.data.enums.Role.ORGANIZER;
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 @Table(name="organizers")

@@ -1,9 +1,11 @@
 package com.eventBooker.data.models;
 
+import com.eventBooker.data.enums.Role;
+import com.eventBooker.data.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import static com.eventBooker.data.models.Role.ATTENDEE;
+import static com.eventBooker.data.enums.Role.ATTENDEE;
 import static jakarta.persistence.GenerationType.AUTO;
 
 @Setter
@@ -24,4 +26,6 @@ public class Attendee{
     @Setter(AccessLevel.NONE)
     @Enumerated(EnumType.STRING)
     private Role role = ATTENDEE;
+    @Enumerated(EnumType.STRING)
+    private TicketStatus status;
 }

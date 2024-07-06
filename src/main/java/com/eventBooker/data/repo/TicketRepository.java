@@ -2,7 +2,7 @@ package com.eventBooker.data.repo;
 
 import com.eventBooker.data.models.Event;
 import com.eventBooker.data.models.Ticket;
-import com.eventBooker.data.models.TicketType;
+import com.eventBooker.data.enums.TicketType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
