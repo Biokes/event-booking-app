@@ -17,5 +17,4 @@ public class OrganizerController {
     public ResponseEntity<?> registerAsOrganizer(@RequestBody OrganizerRegisterRequest registerRequest){
         return ResponseEntity.status(CREATED).body(organizerService.register(registerRequest));
     }
-    //TODO
 }

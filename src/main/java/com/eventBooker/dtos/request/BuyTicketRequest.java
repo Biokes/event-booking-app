@@ -20,9 +20,6 @@ public class BuyTicketRequest {
     private BigDecimal price;
     @NotNull
     private Long eventId;
-//    @Positive
-//    @Min(value=18)
-//    private int age;
     @NotNull
     private TicketType ticketType;
 }

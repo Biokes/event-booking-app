@@ -19,15 +19,18 @@ public class ControllerTest {
     @Test
     void testOrganizersCanRegister() throws Exception {
         String request =
-                "{\"email\":\"bioke3131@gmail.com\",\"phoneNumber\":\"123456789098\", \"password\":\"Passkey12.\"}";
+                "{\"email\":\"bioke3@gmail.com\",\"phoneNumber\":\"123456789098\", \"password\":\"Passkey12.\"}";
         mockMvc.perform(post("/api/v1/organizer/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request))
                 .andExpect(status().isCreated());
     }
-@Test
-    void testAttendeeCanRegister(){
-        String request = "{\"eventId\":\"1\",\"attendeeName\":\"Abbey\",\"ticketType\":\"WEDDING\"}";
-        mockMvc.perform(post())
-}
+    @Test
+    void testAttendeeCanRegister() throws Exception{
+        String request = "{\"name\":\"Sey\",\"eventId\":\"1\",\"price\":\"900\",\"ticketType\":\"VVIP\"}";
+        mockMvc.perform(post("/api/v1/attendee/bookTicket")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isOk());
+    }
 }

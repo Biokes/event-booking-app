@@ -8,6 +8,7 @@ public enum Messages {
     NO_TICKET_BOOKED("No ticket booked Yet"),
     TICKET_ALREADY_EXIST("Ticket already exist"),
     INVALID_DETAILS("Invalid Details provided"),
+    SOMETHING_WENT_WRONG("Something went wrong,You might want to check the details provided"),
     DETAILS_ALREADY_EXIST("Details Provided already exist or is invalid(Organiser Email)");
 
     final String message;

@@ -14,5 +14,4 @@ public interface OrganizerService {
     EventResponse reserveTicket(ReserveTicket reserveTicket);
     AddGuestResponse addGuestToEvent(AddGuestRequest request);
     List<AttendeeResponse> getEventAttendees(Long eventId);
-    List<AttendeeResponse> getAllEventGuests(Long eventId);
 }

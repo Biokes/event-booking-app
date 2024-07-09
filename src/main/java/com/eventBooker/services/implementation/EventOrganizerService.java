@@ -16,8 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.eventBooker.exception.Messages.DETAILS_ALREADY_EXIST;
-import static com.eventBooker.exception.Messages.INVALID_DETAILS;
+import static com.eventBooker.exception.Messages.*;
 
 @Service
 public class EventOrganizerService implements OrganizerService {
@@ -30,7 +29,7 @@ public class EventOrganizerService implements OrganizerService {
     @Autowired
     private EventService eventService;
     @Override
-    public OrganizerResponse register(OrganizerRegisterRequest request) {
+    public OrganizerResponse register(OrganizerRegisterRequest request){
         try {
             return registerOrganizer(request);
         }
@@ -39,64 +38,90 @@ public class EventOrganizerService implements OrganizerService {
         }
     }
     @Override
-    public EventResponse createEvent(CreateEventRequest createRequest) {
-        Organizer  organizer = organizerRepository.findByEmail(createRequest.getEmail()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
-        Event event = eventService.createEvent(createRequest,organizer);
-        EventResponse response = modelMapper.map(event, EventResponse.class);
-        response.setEmail(organizer.getEmail());
-        return response;
+    public EventResponse createEvent(CreateEventRequest createRequest){
+        try {
+            Organizer  organizer = organizerRepository.findByEmail(createRequest.getEmail()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
+            Event event = eventService.createEvent(createRequest,organizer);
+            EventResponse response = modelMapper.map(event, EventResponse.class);
+            response.setEmail(organizer.getEmail());
+            return response;
+        }
+        catch (DataIntegrityViolationException exception){
+            throw new EventException(DETAILS_ALREADY_EXIST.getMessage());
+        }
     }
-
     @Override
     public AddTicketResponse addTicketToEvent(AddTicketRequest addTicketRequest) {
-         return eventService.createTicket(addTicketRequest);
+        try {
+            return eventService.createTicket(addTicketRequest);
+        } catch (DataIntegrityViolationException exception) {
+            throw new EventException(DETAILS_ALREADY_EXIST.getMessage());
+        }
     }
-
     @Override
-    public DiscountTicketResponse discountTicket(DiscountTicketRequest request) {
-        Organizer organizer = organizerRepository.findByEmail(request.getEmail())
-                .orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
-        comparePassword(organizer,request.getPassword());
-        return eventService.discountTicket(request);
+    public DiscountTicketResponse discountTicket(DiscountTicketRequest request){
+        try {
+            Organizer organizer = organizerRepository.findByEmail(request.getEmail())
+                    .orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
+            comparePassword(organizer,request.getPassword());
+            return eventService.discountTicket(request);
+        }
+        catch (DataIntegrityViolationException exception){
+            throw new EventException(DETAILS_ALREADY_EXIST.getMessage());
+        }
     }
-
     @Override
     public List<EventResponse> getAllEventAttendees(ViewEventsRequest request) {
-        Organizer organizer =organizerRepository.findByEmail(request.getEmail())
-                .orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
-        return eventService.viewAllOrganizerEvents(organizer);
+        try {
+            Organizer organizer =organizerRepository.findByEmail(request.getEmail())
+                    .orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
+            return eventService.viewAllOrganizerEvents(organizer);
+        }
+        catch (DataIntegrityViolationException exception){
+            throw new EventException(DETAILS_ALREADY_EXIST.getMessage());
+        }
     }
-
     @Override
     public EventResponse reserveTicket(ReserveTicket reserveTicket) {
-       Event event =  eventService.findEventById(reserveTicket.getEventId());
-        return eventService.reserveTicketsForAttendees(reserveTicket,event);
+        try {
+            Event event =  eventService.findEventById(reserveTicket.getEventId());
+            return eventService.reserveTicketsForAttendees(reserveTicket,event);
+        }
+        catch (DataIntegrityViolationException exception){
+            throw new EventException(DETAILS_ALREADY_EXIST.getMessage());
+        }
     }
-
     @Override
-    public AddGuestResponse addGuestToEvent(AddGuestRequest request) {
-        return eventService.addEventGuest(request);
+    public AddGuestResponse addGuestToEvent(AddGuestRequest request){
+        try {
+            return eventService.addEventGuest(request);
+        }
+        catch (DataIntegrityViolationException exception){
+            throw new EventException(SOMETHING_WENT_WRONG.getMessage());
+        }
     }
-
     @Override
     public List<AttendeeResponse> getEventAttendees(Long eventId) {
-        return eventService.getEventAttendees(eventId);
+        try {
+            return eventService.getEventAttendees(eventId);
+        }
+        catch (DataIntegrityViolationException exception){
+            throw new EventException(SOMETHING_WENT_WRONG.getMessage());
+        }
     }
-
-    @Override
-    public List<AttendeeResponse> getAllEventGuests(Long eventId) {
-        return null;
-    }
-
     private void comparePassword(Organizer organizer,String password) {
         if(!encoder.matches(password, organizer.getPassword()))
             throw new EventException(INVALID_DETAILS.getMessage());
     }
-
     private OrganizerResponse registerOrganizer(OrganizerRegisterRequest request) {
-        request.setPassword(encoder.encode(request.getPassword()));
-        Organizer organizer = modelMapper.map(request, Organizer.class);
-        organizer = organizerRepository.save(organizer);
-        return modelMapper.map(organizer, OrganizerResponse.class);
+        try {
+            request.setPassword(encoder.encode(request.getPassword()));
+            Organizer organizer = modelMapper.map(request, Organizer.class);
+            organizer = organizerRepository.save(organizer);
+            return modelMapper.map(organizer, OrganizerResponse.class);
+        }
+        catch (DataIntegrityViolationException exception){
+            throw new EventException(SOMETHING_WENT_WRONG.getMessage());
+        }
     }
 }
