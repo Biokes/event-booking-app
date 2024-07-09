@@ -26,9 +26,8 @@ public class Organizer {
     private String email;
     private String password;
     private String phoneNumber;
-    @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Set<Authority> authourities;
+    private Authority authourities;
     @Setter(AccessLevel.NONE)
     @Enumerated(EnumType.STRING)
     private Role role = ORGANIZER;

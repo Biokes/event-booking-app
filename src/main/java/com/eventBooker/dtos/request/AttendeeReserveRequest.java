@@ -11,7 +11,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttendeeReserveRequest{
-    @Min(0)
     private Long eventId;
     @NotNull
     private String attendeeName;

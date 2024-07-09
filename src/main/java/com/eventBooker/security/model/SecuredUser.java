@@ -1,5 +1,6 @@
 package com.eventBooker.security.model;
 
+import com.eventBooker.data.enums.Role;
 import com.eventBooker.data.models.Organizer;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -14,7 +16,8 @@ public class SecuredUser implements UserDetails {
     private final Organizer user;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        return user.getAuthourities().stream()
+        List<Role> role = List.of(user.getRole());
+        return role.stream()
                 .map(authourity->new SimpleGrantedAuthority(authourity.name()))
                 .collect(Collectors.toSet());
     }

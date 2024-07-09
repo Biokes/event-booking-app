@@ -13,8 +13,9 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class OrganizerController {
     @Autowired
     private OrganizerService organizerService;
-    @RequestMapping("/register/organizer")
+    @RequestMapping("/register")
     public ResponseEntity<?> registerAsOrganizer(@RequestBody OrganizerRegisterRequest registerRequest){
         return ResponseEntity.status(CREATED).body(organizerService.register(registerRequest));
     }
+    //TODO
 }

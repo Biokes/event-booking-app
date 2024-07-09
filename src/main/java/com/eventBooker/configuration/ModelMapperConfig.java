@@ -1,4 +1,4 @@
-package com.eventBooker.beans;
+package com.eventBooker.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

@@ -33,17 +33,11 @@ public class CustomerUsernameAndPasswordAuthFilter extends UsernamePasswordAuthe
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response){
         try{
-            //1. retrieve auth credentials from request body
+
             InputStream requestBodyStream = request.getInputStream();
-            //2.convert json data from 1. to  java object
             LoginRequest loginRequest = mapper.readValue(requestBodyStream, LoginRequest.class);
-            //3. create authentication object that is not yet authenticated
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(), loginRequest.getPassword());
-            //4. Pass the authenticated Authentication object to d authenticationManager
-            //4b. get back authentication result from authentication manager
+            Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
             Authentication authenticationResult = authenticationManager.authenticate(authentication);
-            //put the authentication result in the security context
             SecurityContextHolder.getContext().setAuthentication(authenticationResult);
             return authenticationResult;
         }
@@ -74,7 +68,7 @@ public class CustomerUsernameAndPasswordAuthFilter extends UsernamePasswordAuthe
                     .sign(Algorithm.HMAC512("secret"));
     }
 
-    private static String[] getClaimsFrom(Collection<? extends GrantedAuthority>grantedAuthorities){
+    private static String[] getClaimsFrom(Collection<? extends GrantedAuthority> grantedAuthorities){
         return grantedAuthorities.stream()
                 .map((grantedAuthority)->grantedAuthority.getAuthority())
                 .toArray(String[]::new);

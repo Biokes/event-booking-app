@@ -23,13 +23,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
     var authorizationFilter = new CustomerUsernameAndPasswordAuthFilter(authManager);
     authorizationFilter.setFilterProcessesUrl("api/v1/auth");
-return httpSecurity.csrf(AbstractHttpConfigurer::disable)
+    return
+        httpSecurity.csrf(AbstractHttpConfigurer::disable)
                    .cors(AbstractHttpConfigurer::disable)
                    .sessionManagement(c->c.sessionCreationPolicy(STATELESS))
-                   .addFilterBefore(authorizationFilter, BasicAuthenticationFilter.class)
-        .authorizeHttpRequests(endpoint-> endpoint.requestMatchers("api/v1/attendee/register","").permitAll())
+//                   .addFilterAt(authorizationFilter, CustomAuthorizationFilter.class)
+                .addFilterBefore(customAuthorizationFilter, CustomerUsernameAndPasswordAuthFilter.class)
+        .authorizeHttpRequests(endpoint-> endpoint.requestMatchers("api/v1/attendee/register").permitAll())
         .authorizeHttpRequests(endpoint->endpoint.requestMatchers("api/v1/attendee/").hasAuthority("ATTENDEE"))
-        .authorizeHttpRequests(endpoint ->endpoint.requestMatchers("api/v1/organizer/").hasAuthority("ORGANIZER"))
+        .authorizeHttpRequests(endpoint-> endpoint.requestMatchers("api/v1/organizer/register").permitAll())
+        .authorizeHttpRequests(endpoint ->endpoint.requestMatchers("api/v1/organizer/auth").hasAuthority("ORGANIZER"))
         .build();
     }
 }
