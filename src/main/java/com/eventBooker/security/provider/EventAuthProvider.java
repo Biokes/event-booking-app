@@ -27,8 +27,7 @@ public class EventAuthProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         if(encoder.matches(password,userDetails.getPassword())){
-            Authentication authResolved  = new UsernamePasswordAuthenticationToken(email, password, userDetails.getAuthorities());
-            return authResolved;
+            return new UsernamePasswordAuthenticationToken(email, password, userDetails.getAuthorities());
         }
         throw new BadCredentialsException(INVALID_DETAILS.getMessage());
     }

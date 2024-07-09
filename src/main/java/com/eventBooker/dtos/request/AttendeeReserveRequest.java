@@ -13,8 +13,6 @@ import lombok.*;
 public class AttendeeReserveRequest{
     @Min(0)
     private Long eventId;
-    @Min(0)
-    private int age;
     @NotNull
     private String attendeeName;
     @NotNull

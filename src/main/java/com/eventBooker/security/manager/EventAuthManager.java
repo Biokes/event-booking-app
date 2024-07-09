@@ -22,6 +22,5 @@ public class EventAuthManager implements AuthenticationManager {
         if(authenticationProvider.supports(authenticationType))
             authenticationProvider.authenticate(authentication);
         throw new BadCredentialsException(INVALID_DETAILS.getMessage());
-
     }
 }

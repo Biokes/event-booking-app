@@ -73,6 +73,21 @@ public class EventOrganizerService implements OrganizerService {
         return eventService.reserveTicketsForAttendees(reserveTicket,event);
     }
 
+    @Override
+    public AddGuestResponse addGuestToEvent(AddGuestRequest request) {
+        return eventService.addEventGuest(request);
+    }
+
+    @Override
+    public List<AttendeeResponse> getEventAttendees(Long eventId) {
+        return eventService.getEventAttendees(eventId);
+    }
+
+    @Override
+    public List<AttendeeResponse> getAllEventGuests(Long eventId) {
+        return null;
+    }
+
     private void comparePassword(Organizer organizer,String password) {
         if(!encoder.matches(password, organizer.getPassword()))
             throw new EventException(INVALID_DETAILS.getMessage());

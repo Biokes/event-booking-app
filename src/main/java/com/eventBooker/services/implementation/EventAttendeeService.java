@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 import static com.eventBooker.data.enums.Role.ATTENDEE;
+import static com.eventBooker.data.enums.TicketStatus.BOOKED;
 import static com.eventBooker.data.enums.TicketStatus.RESERVED;
 import static com.eventBooker.exception.Messages.INVALID_DETAILS;
 import static com.eventBooker.exception.Messages.NO_AVAILABLE_TICKET;
@@ -39,18 +40,34 @@ public class EventAttendeeService implements AttendeeService {
     public BookTicketResponse bookTicket(BuyTicketRequest request){
        Event event = eventRepository.findById(request.getEventId()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
         Ticket ticket = ticketRepository.findByEventAndTicketType(event,request.getTicketType()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
-        validateAndSell(request, ticket);
-        Attendee attendee = Attendee.builder().age(request.getAge()).name(request.getName()).ticket(ticket).build();
-       return BookTicketResponse.builder().id(attendee.getId()).startTime(event.getStartDate()).endTime(event.getEndTime()).ticketType(ticket.getTicketType()).build();
+       Attendee attendee = Attendee.builder().ticket(ticket).role(ATTENDEE).status(BOOKED).name(request.getName()).build();
+       repository.save(attendee);
+       return BookTicketResponse.builder().ticketType(ticket.getTicketType())
+               .endTime(event.getEndTime())
+               .startTime(event.getStartDate()).id(attendee.getId()).build();
     }
     @Override
+    @Transactional
     public ReserveTicketResponse reserveTicket(AttendeeReserveRequest request) {
         Event event = eventRepository.findById(request.getEventId()).orElseThrow(EventException::new);
         Ticket ticket = ticketRepository.findByEventAndTicketType(event,request.getTicketType()).orElseThrow(EventException::new);
-        Attendee attendee = Attendee.builder().age(request.getAge()).name(request.getAttendeeName())
-                .role(ATTENDEE).ticket(ticket).status(RESERVED).build();
+        Attendee attendee = mapAttendee(request, ticket);
         attendee=repository.save(attendee);
-        return modelMapper.map(attendee,);
+        return map(attendee,event);
+    }
+    private ReserveTicketResponse map(Attendee attendee, Event event) {
+        ReserveTicketResponse response = modelMapper.map(attendee, ReserveTicketResponse.class);
+        response.setStartDate(event.getStartDate());
+        response.setEndTime(event.getEndTime());
+        response.setEventId(event.getId());
+        response.setEventType(event.getEventType());
+        return response;
+    }
+    private static Attendee mapAttendee(AttendeeReserveRequest request, Ticket ticket) {
+        return  Attendee.builder()
+                .name(request.getAttendeeName())
+                .role(ATTENDEE).ticket(ticket)
+                .status(RESERVED).build();
     }
     private void validateAndSell(BuyTicketRequest request, Ticket ticket) {
         validateTicketBooking(ticket);

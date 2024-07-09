@@ -1,17 +1,15 @@
 package com.eventBooker.services.implementation;
 
+import com.eventBooker.data.enums.Role;
+import com.eventBooker.data.models.Attendee;
 import com.eventBooker.data.models.Event;
 import com.eventBooker.data.models.Organizer;
 import com.eventBooker.data.models.Ticket;
+import com.eventBooker.data.repo.AttendeeRepository;
 import com.eventBooker.data.repo.EventRepository;
 import com.eventBooker.data.repo.TicketRepository;
-import com.eventBooker.dtos.request.AddTicketRequest;
-import com.eventBooker.dtos.request.CreateEventRequest;
-import com.eventBooker.dtos.request.DiscountTicketRequest;
-import com.eventBooker.dtos.request.ReserveTicket;
-import com.eventBooker.dtos.response.AddTicketResponse;
-import com.eventBooker.dtos.response.DiscountTicketResponse;
-import com.eventBooker.dtos.response.EventResponse;
+import com.eventBooker.dtos.request.*;
+import com.eventBooker.dtos.response.*;
 import com.eventBooker.exception.EventException;
 import com.eventBooker.services.interfaces.EventService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.eventBooker.data.enums.Role.INVITED_GUEST;
+import static com.eventBooker.data.enums.TicketStatus.BOOKED;
+import static com.eventBooker.data.enums.TicketType.GUEST;
 import static com.eventBooker.exception.Messages.*;
 
 @Service
@@ -36,6 +37,8 @@ public class BookEventService implements EventService {
     private EventRepository eventRepository;
     @Autowired
     private TicketRepository ticketRepo;
+    @Autowired
+    private AttendeeRepository attendeeRepository;
     @Override
     public Event createEvent(CreateEventRequest createRequest, Organizer organizer) {
         Event event = modelMapper.map(createRequest, Event.class);
@@ -43,7 +46,7 @@ public class BookEventService implements EventService {
         return eventRepository.save(event);
     }
     @Override
-    public AddTicketResponse createTicket(AddTicketRequest addTicketRequest) {
+    public AddTicketResponse createTicket(AddTicketRequest addTicketRequest){
         Event event = eventRepository.findById(addTicketRequest.getEventId()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
         checkDuplicateTicket(addTicketRequest, event);
         Ticket ticket = modelMapper.map(addTicketRequest, Ticket.class);
@@ -81,25 +84,51 @@ public class BookEventService implements EventService {
     }
     @Override
     @Transactional
-    public EventResponse reserveTicketsForAttendees(ReserveTicket reserveTicket, Event event) {
+    public EventResponse reserveTicketsForAttendees(ReserveTicket reserveTicket, Event event){
         Ticket ticket = ticketRepo.findByEventAndTicketType(event,reserveTicket.getTicketType()).orElseThrow(()->new EventException(INVALID_DETAILS.getMessage()));
         checkTicket(ticket);
-        checkAndReserve(reserveTicket, ticket);
         ticket.setTotal(ticket.getTotal()-reserveTicket.getQuantity());
         ticket=ticketRepo.save(ticket);
         return EventResponse.builder()
                 .eventType(ticket.getEvent().getEventType()).total((long) ticket.getTotal())
-                .reserved(ticket.getReserved()).endDate(event.getEndTime())
+                .endDate(event.getEndTime())
                 .id(event.getId()).email(event.getOrganizer().getEmail())
                 .startDate(event.getStartDate()).build();
     }
 
-    private static void checkAndReserve(ReserveTicket reserveTicket, Ticket ticket) {
-        if(Optional.of(ticket.getReserved()).isEmpty() || ticket.getReserved()==0) {
-                ticket.setReserved(reserveTicket.getQuantity());
-                return;
-            }
-       ticket.setReserved(ticket.getReserved()+reserveTicket.getQuantity());
+    @Override
+    public AddGuestResponse addEventGuest(AddGuestRequest request) {
+        Event event = findEventById(request.getEventId());
+        Ticket ticket = getGuestTicket(request,event);
+        Attendee guest = Attendee.builder().status(BOOKED).name(request.getGuestName())
+                .ticket(ticket).role(INVITED_GUEST).build();
+        guest = attendeeRepository.save(guest);
+        AddGuestResponse response = modelMapper.map(guest, AddGuestResponse.class);
+        response.setEndTime(event.getEndTime());response.setStartDate(event.getStartDate());
+        return response;
+    }
+
+    @Override
+    public List<AttendeeResponse> getEventAttendees(Long eventId) {
+        findEventById(eventId);
+        return attendeeRepository.findAll().stream()
+                .filter(attendee -> attendee.getTicket().getEvent().getId().equals(eventId))
+                .map(attendee -> modelMapper.map(attendee,AttendeeResponse.class)).toList();
+    }
+
+    private Ticket getGuestTicket(AddGuestRequest request,Event event) {
+        Optional<Ticket> ticket = ticketRepo.findByEventAndTicketType(event,request.getTicketType());
+        if(ticket.isEmpty()) ticket = Optional.of(createGuestTicket(event));
+        return ticket.get();
+    }
+
+    private Ticket createGuestTicket(Event event) {
+        Ticket ticket = new Ticket();
+        ticket.setTicketType(GUEST);
+        ticket.setEvent(event);
+        ticket.setPrice(new BigDecimal("0"));
+        ticket.setTotal(50);
+        return ticketRepo.save(ticket);
     }
 
     private void checkTicket(Ticket ticket) {

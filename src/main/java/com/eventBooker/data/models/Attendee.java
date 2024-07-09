@@ -19,9 +19,9 @@ public class Attendee{
     @Id
     @GeneratedValue(strategy = AUTO)
     private Long id;
+    @Column(unique = true)
     private String name;
-    private int age;
-    @OneToOne
+    @ManyToOne
     private Ticket ticket;
     @Setter(AccessLevel.NONE)
     @Enumerated(EnumType.STRING)

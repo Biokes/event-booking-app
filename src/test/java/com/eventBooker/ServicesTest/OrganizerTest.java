@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,7 +53,7 @@ public class OrganizerTest {
     @Test
     void testTicketCanBeAddedToEvent(){
         AddTicketRequest addTicketRequest = AddTicketRequest.builder().eventId(7L)
-                .ticketType(REGULAR).total(1000).price(new BigDecimal("1000")).build();
+                .ticketType(IRREGULAR).total(100).price(new BigDecimal("100")).build();
         assertThrows(EventException.class,()->organizerService.addTicketToEvent(addTicketRequest));
         addTicketRequest.setEventId(1L);
         AddTicketResponse response = organizerService.addTicketToEvent(addTicketRequest);
@@ -62,16 +63,16 @@ public class OrganizerTest {
     @Test
     void testDiscountCanBeAddedToTicket(){
         DiscountTicketRequest request = DiscountTicketRequest.builder().email("abbey@gmail.com").ticketType(VVIP)
-                .discountPrice(new BigDecimal("9900")).eventId(1L).password("Password12.").build();
+                .discountPrice(new BigDecimal("100")).eventId(1L).password("Password12.").build();
         DiscountTicketResponse response = organizerService.discountTicket(request);
         assertNotNull(response);
-        assertEquals(new BigDecimal("90000.00"),response.getPrice());
+        assertEquals(new BigDecimal("900.00"),response.getPrice());
         assertEquals(request.getTicketType(),response.getTicketType());
     }
     @Test
     void testAttendeesCanPurchaseTicket(){
-        BuyTicketRequest request = BuyTicketRequest.builder().price(new BigDecimal("90000.00")).eventId(1L)
-                .ticketType(IRREGULAR).name("haio").age(80).build();
+        BuyTicketRequest request = BuyTicketRequest.builder().price(new BigDecimal("900.00")).eventId(1L)
+                .ticketType(REGULAR).name("hio").build();
         assertThrows(EventException.class,()->attendeeService.bookTicket(request));
         request.setTicketType(VVIP);
         BookTicketResponse response = attendeeService.bookTicket(request);
@@ -84,6 +85,7 @@ public class OrganizerTest {
         ViewEventsRequest request = ViewEventsRequest.builder().email("abbey@gmail.com").build();
         List<EventResponse> response = organizerService.getAllEventAttendees(request);
         assertNotNull(response);
+        assertEquals(1, response.size());
     }
     @Test
     void testOrganizerCanReserveTicket(){
@@ -101,12 +103,21 @@ public class OrganizerTest {
     @Test
     void testAttendeesBookTicketForReservation(){
         AttendeeReserveRequest request = AttendeeReserveRequest.builder()
-                .eventId(3L).attendeeName("Abbey").ticketType(VIP).build();
+                .eventId(1L).attendeeName("Abbey").ticketType(VVIP).build();
         ReserveTicketResponse response = attendeeService.reserveTicket(request);
         assertNotNull(response);
         assertThat(response.getStartDate().toString()).isEqualTo("2023-12-03T10:15:30");
-        assertThat(response.getEndTime().toString()).isEqualTo("2023-12-03T10:15:30");
+        assertThat(response.getEndTime().toString()).isEqualTo("2023-12-03T20:00");
         assertThat(response.getEventType()).isEqualTo(WEDDING);
         assertThat(response.getEventId()).isEqualTo(1L);
+    }
+    @Test
+    void testOrgamizerCanAddGuestToEvent(){
+        AddGuestRequest request = AddGuestRequest.builder().eventId(1L).guestName("abey").build();
+        AddGuestResponse response = organizerService.addGuestToEvent(request);
+        assertNotNull(response);
+        assertNotNull(response.getName());
+        assertNotNull(response.getEndTime());
+        assertNotNull(response.getStartDate());
     }
 }

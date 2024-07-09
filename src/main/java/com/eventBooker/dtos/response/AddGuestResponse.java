@@ -1,11 +1,9 @@
 package com.eventBooker.dtos.response;
 
-import com.eventBooker.data.enums.TicketType;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,15 +11,15 @@ import java.time.LocalDateTime;
 @Builder
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class BookTicketResponse {
-    private Long id;
-    private TicketType ticketType;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+@AllArgsConstructor
+public class AddGuestResponse {
+    private String name;
+    private Long eventId;
+    @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime startTime;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime startDate;
+    @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime endTime;
 }

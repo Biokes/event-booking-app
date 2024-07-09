@@ -2,27 +2,21 @@ package com.eventBooker.dtos.request;
 
 import com.eventBooker.data.enums.TicketType;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.*;
 
-import java.math.BigDecimal;
-
+@Builder
 @Setter
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BuyTicketRequest {
-    @NotNull
-    private String name;
-    @NotNull
-    private BigDecimal price;
-    @NotNull
+public class AddGuestRequest {
+    @NotBlank
+    private String guestName;
+    @Min(1)
     private Long eventId;
-//    @Positive
-//    @Min(value=18)
-//    private int age;
     @NotNull
     private TicketType ticketType;
 }
+
