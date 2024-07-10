@@ -22,13 +22,13 @@ public class SecurityConfig {
     private AuthenticationManager authManager;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
-    var authorizationFilter = new CustomerUsernameAndPasswordAuthFilter(authManager);
-    authorizationFilter.setFilterProcessesUrl("api/v1/auth");
+    var aauthenticationFilter = new CustomerUsernameAndPasswordAuthFilter(authManager);
+    aauthenticationFilter.setFilterProcessesUrl("api/v1/organizer");
     return
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                    .cors(AbstractHttpConfigurer::disable)
                    .sessionManagement(c->c.sessionCreationPolicy(STATELESS))
-                   .addFilterAt(authorizationFilter, CustomerUsernameAndPasswordAuthFilter.class)
+                   .addFilterAt(aauthenticationFilter, CustomerUsernameAndPasswordAuthFilter.class)
                    .addFilterBefore(customAuthorizationFilter, CustomerUsernameAndPasswordAuthFilter.class)
         .authorizeHttpRequests(endpoint-> endpoint.requestMatchers("api/v1/organizer/register","/api/v1/attendee/**").permitAll())
         .authorizeHttpRequests(endpoint ->endpoint.requestMatchers("api/v1/organizer/**").hasAuthority("ORGANIZER"))

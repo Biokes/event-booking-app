@@ -22,8 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 
 
 @AllArgsConstructor
@@ -33,7 +33,6 @@ public class CustomerUsernameAndPasswordAuthFilter extends UsernamePasswordAuthe
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response){
         try{
-
             InputStream requestBodyStream = request.getInputStream();
             LoginRequest loginRequest = mapper.readValue(requestBodyStream, LoginRequest.class);
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
@@ -64,13 +63,13 @@ public class CustomerUsernameAndPasswordAuthFilter extends UsernamePasswordAuthe
            return  JWT.create()
                     .withIssuer("mavericks_hub")
                     .withArrayClaim("roles",getClaimsFrom(authResult.getAuthorities()))
-                    .withExpiresAt(Instant.now().plusSeconds(24*60*60))
+                    .withExpiresAt(new Date(new Date().getTime() + 604800000L))//7days Token validity
                     .sign(Algorithm.HMAC512("secret"));
     }
 
     private static String[] getClaimsFrom(Collection<? extends GrantedAuthority> grantedAuthorities){
         return grantedAuthorities.stream()
-                .map((grantedAuthority)->grantedAuthority.getAuthority())
+                .map(GrantedAuthority::getAuthority)//(grantedAuthority)->grantedAuthority.getAuthority()
                 .toArray(String[]::new);
     }
     @Override
@@ -87,3 +86,5 @@ public class CustomerUsernameAndPasswordAuthFilter extends UsernamePasswordAuthe
         response.flushBuffer();
     }
 }
+//TODO: Learn
+//stripe , apollo, ionic, firebase, petite vue

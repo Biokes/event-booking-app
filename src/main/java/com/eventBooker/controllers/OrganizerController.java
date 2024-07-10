@@ -1,4 +1,5 @@
 package com.eventBooker.controllers;
+import com.eventBooker.dtos.request.CreateEventRequest;
 import com.eventBooker.dtos.request.OrganizerRegisterRequest;
 import com.eventBooker.services.interfaces.OrganizerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequestMapping("/api/v1/organizer")
 public class OrganizerController {
@@ -16,5 +19,9 @@ public class OrganizerController {
     @RequestMapping("/register")
     public ResponseEntity<?> registerAsOrganizer(@RequestBody OrganizerRegisterRequest registerRequest){
         return ResponseEntity.status(CREATED).body(organizerService.register(registerRequest));
+    }
+    @RequestMapping("/create-event")
+    public ResponseEntity<?> createEvent(@RequestBody CreateEventRequest request){
+        return ResponseEntity.status(OK).body(organizerService.createEvent(request));
     }
 }
