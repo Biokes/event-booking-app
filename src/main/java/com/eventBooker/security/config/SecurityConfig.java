@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 
-import static com.eventBooker.data.enums.Role.ATTENDEE;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Component
