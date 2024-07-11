@@ -18,5 +18,6 @@ public class AddGuestRequest {
     private Long eventId;
     @NotNull
     private TicketType ticketType;
+
 }
 

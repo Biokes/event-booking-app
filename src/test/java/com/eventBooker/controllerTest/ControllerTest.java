@@ -25,6 +25,15 @@ public class ControllerTest {
                 .content(request))
                 .andExpect(status().isCreated());
     }
+//    @Test
+//    void testOrganizerCanCreateEvent() throws Exception {
+//        String request =
+//"{\"eventType\":\"MEETING\",\"startTime\":\"2024-08-01T14:30:00\",\"endTime\":\"2024-08-01T16:00:00\",\"email\":\"johndoeevent@example.com\"}";
+//            mockMvc.perform(post("/api/v1/organizer/create-event")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(request))
+//                .andExpect(status().isOk());
+//    }
     @Test
     void testAttendeeCanRegister() throws Exception{
         String request = "{\"name\":\"Sey\",\"eventId\":\"1\",\"price\":\"900\",\"ticketType\":\"VVIP\"}";

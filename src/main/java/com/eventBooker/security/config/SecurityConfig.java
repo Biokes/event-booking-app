@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
     var aauthenticationFilter = new CustomerUsernameAndPasswordAuthFilter(authManager);
-    aauthenticationFilter.setFilterProcessesUrl("api/v1/organizer");
+    aauthenticationFilter.setFilterProcessesUrl("api/v1/auth");
     return
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                    .cors(AbstractHttpConfigurer::disable)
@@ -31,7 +31,12 @@ public class SecurityConfig {
                    .addFilterAt(aauthenticationFilter, CustomerUsernameAndPasswordAuthFilter.class)
                    .addFilterBefore(customAuthorizationFilter, CustomerUsernameAndPasswordAuthFilter.class)
         .authorizeHttpRequests(endpoint-> endpoint.requestMatchers("api/v1/organizer/register","/api/v1/attendee/**").permitAll())
-        .authorizeHttpRequests(endpoint ->endpoint.requestMatchers("api/v1/organizer/**").hasAuthority("ORGANIZER"))
+        .authorizeHttpRequests(endpoint ->endpoint.requestMatchers(
+                "api/v1/organizer/create-event",
+                "api/v1/organizer/addTicket",
+                "api/v1/organizer/discount-ticket",
+                "api/v1/organizer/getAllPartyAttendee",
+                "api/v1/organizer/reserve-ticket").hasAuthority("ORGANIZER"))
         .build();
     }
 }

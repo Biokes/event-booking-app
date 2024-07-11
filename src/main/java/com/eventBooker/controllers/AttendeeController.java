@@ -27,5 +27,6 @@ public class AttendeeController {
     public ResponseEntity<?> reserveTicket(@RequestBody AttendeeReserveRequest reserveTicket){
         return ResponseEntity.status(OK).body(attendeeService.reserveTicket(reserveTicket));
     }
-
+    //TODO:
+    // view All events on the platform
 }

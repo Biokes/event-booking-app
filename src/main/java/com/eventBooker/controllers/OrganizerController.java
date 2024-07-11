@@ -1,11 +1,11 @@
 package com.eventBooker.controllers;
-import com.eventBooker.dtos.request.CreateEventRequest;
-import com.eventBooker.dtos.request.OrganizerRegisterRequest;
+import com.eventBooker.dtos.request.*;
 import com.eventBooker.services.interfaces.OrganizerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -24,4 +24,26 @@ public class OrganizerController {
     public ResponseEntity<?> createEvent(@RequestBody CreateEventRequest request){
         return ResponseEntity.status(OK).body(organizerService.createEvent(request));
     }
+    @RequestMapping("/addTicket")
+    public ResponseEntity<?> createTicket(@RequestBody AddTicketRequest addTicketRequest){
+        return ResponseEntity.status(OK)
+                .body(organizerService.addTicketToEvent(addTicketRequest));
+    }
+    @RequestMapping("/discount-ticket")
+    public ResponseEntity<?> discountTicket(@RequestBody DiscountTicketRequest request){
+        return ResponseEntity.status(OK)
+                .body(organizerService.discountTicket(request));
+    }
+    @RequestMapping("/getAllPartyAttendee")
+    public ResponseEntity<?> getAllEventAttendees(@RequestBody ViewEventsRequest request){
+        return ResponseEntity.status(OK)
+                .body(organizerService.getAllEventAttendees(request));
+    }
+    @RequestMapping("/reserve-ticket")
+    public ResponseEntity<?> reserveTicket(@RequestBody ReserveTicket request){
+        return ResponseEntity.status(OK)
+                .body(organizerService.reserveTicket(request));
+    }
+    // TODO:
+    //    AddGuestResponse addGuestToEvent(AddGuestRequest request);
 }
