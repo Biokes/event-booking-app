@@ -4,6 +4,7 @@ import com.eventBooker.data.models.Event;
 import com.eventBooker.dtos.request.*;
 import com.eventBooker.dtos.response.*;
 import com.eventBooker.exception.EventException;
+import com.eventBooker.exception.Messages;
 import com.eventBooker.services.interfaces.EventService;
 import com.eventBooker.services.interfaces.OrganizerService;
 import com.eventBooker.data.models.Organizer;
@@ -32,6 +33,7 @@ public class EventOrganizerService implements OrganizerService {
     public OrganizerResponse register(OrganizerRegisterRequest request){
         try {
             return registerOrganizer(request);
+
         }
         catch (DataIntegrityViolationException exception){
             throw new EventException(DETAILS_ALREADY_EXIST.getMessage());
@@ -114,14 +116,9 @@ public class EventOrganizerService implements OrganizerService {
             throw new EventException(INVALID_DETAILS.getMessage());
     }
     private OrganizerResponse registerOrganizer(OrganizerRegisterRequest request) {
-        try {
-            request.setPassword(encoder.encode(request.getPassword()));
             Organizer organizer = modelMapper.map(request, Organizer.class);
+            organizer.setPassword(encoder.encode(request.getPassword()));
             organizer = organizerRepository.save(organizer);
             return modelMapper.map(organizer, OrganizerResponse.class);
-        }
-        catch (DataIntegrityViolationException exception){
-            throw new EventException(SOMETHING_WENT_WRONG.getMessage());
-        }
     }
 }

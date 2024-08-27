@@ -18,3 +18,6 @@ public class OrganizerRegisterRequest {
     @Pattern(regexp = "[a-zA-Z0-9]{8,}+[+-.,/]",message = "Alphanumerics and symbols is required")
     private String password;
 }
+
+
+

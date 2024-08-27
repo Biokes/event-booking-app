@@ -33,7 +33,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         //3. decode access token
         //4. extract token permission
         //5. add token permission to security context
-        //6. call next filter in the filterchain
+        //6. call next filter in the filterc ahain
         String requestPath = request.getServletPath();
         boolean isRequestPath= END_POINTS.contains(requestPath);
         if(isRequestPath)filterChain.doFilter(request, response);

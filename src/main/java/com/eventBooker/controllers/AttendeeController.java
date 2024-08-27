@@ -2,7 +2,6 @@ package com.eventBooker.controllers;
 
 import com.eventBooker.dtos.request.AttendeeReserveRequest;
 import com.eventBooker.dtos.request.BuyTicketRequest;
-import com.eventBooker.dtos.request.ReserveTicket;
 import com.eventBooker.services.interfaces.AttendeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +26,10 @@ public class AttendeeController {
     public ResponseEntity<?> reserveTicket(@RequestBody AttendeeReserveRequest reserveTicket){
         return ResponseEntity.status(OK).body(attendeeService.reserveTicket(reserveTicket));
     }
-    //TODO:
+    @RequestMapping("allEvents")
+    public ResponseEntity<?> getAllEvents(){
+        return ResponseEntity.status(OK).body(attendeeService.getAllEvents());
+
+    }    //TODO:
     // view All events on the platform
 }

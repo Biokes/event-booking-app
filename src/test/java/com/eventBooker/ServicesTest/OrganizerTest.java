@@ -30,7 +30,7 @@ public class OrganizerTest {
     @Test
     void testOrganizersCanRegister(){
         OrganizerRegisterRequest request = OrganizerRegisterRequest.builder().
-                email("abbey@gmail.com").phoneNumber("+234508978679").password("Password12.").build();
+                email("abbe12y@gmail.com").phoneNumber("").password("Password12.").build();
         assertThrows(EventException.class, ()->organizerService.register(request));
         request.setEmail("ab0@gmail.com");
         OrganizerResponse response = organizerService.register(request);

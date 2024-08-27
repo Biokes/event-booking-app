@@ -29,13 +29,14 @@ public class SecurityConfig {
                    .sessionManagement(c->c.sessionCreationPolicy(STATELESS))
                    .addFilterAt(aauthenticationFilter, CustomerUsernameAndPasswordAuthFilter.class)
                    .addFilterBefore(customAuthorizationFilter, CustomerUsernameAndPasswordAuthFilter.class)
-        .authorizeHttpRequests(endpoint-> endpoint.requestMatchers("api/v1/organizer/register","/api/v1/attendee/**").permitAll())
+        .authorizeHttpRequests(endpoint-> endpoint.requestMatchers("api/v1/organizer/register",
+                "/api/v1/attendee/**").permitAll())
         .authorizeHttpRequests(endpoint ->endpoint.requestMatchers(
-                "api/v1/organizer/create-event",
-                "api/v1/organizer/addTicket",
-                "api/v1/organizer/discount-ticket",
-                "api/v1/organizer/getAllPartyAttendee",
-                "api/v1/organizer/reserve-ticket").hasAuthority("ORGANIZER"))
+                "/api/v1/organizer/create-event",
+                "/api/v1/organizer/addTicket",
+                "/api/v1/organizer/discount-ticket",
+                "/api/v1/organizer/getAllPartyAttendee",
+                "/api/v1/organizer/reserve-ticket").hasAuthority("ORGANIZER"))
         .build();
     }
 }

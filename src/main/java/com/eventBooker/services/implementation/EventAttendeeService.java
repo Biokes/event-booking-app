@@ -11,6 +11,7 @@ import com.eventBooker.data.repo.TicketRepository;
 import com.eventBooker.dtos.request.AttendeeReserveRequest;
 import com.eventBooker.dtos.request.BuyTicketRequest;
 import com.eventBooker.dtos.response.BookTicketResponse;
+import com.eventBooker.dtos.response.EventResponse;
 import com.eventBooker.dtos.response.ReserveTicketResponse;
 import com.eventBooker.exception.EventException;
 import com.eventBooker.services.interfaces.AttendeeService;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.eventBooker.data.enums.Role.ATTENDEE;
 import static com.eventBooker.data.enums.TicketStatus.BOOKED;
@@ -55,6 +57,12 @@ public class EventAttendeeService implements AttendeeService {
         attendee=repository.save(attendee);
         return map(attendee,event);
     }
+
+    @Override
+    public List<EventResponse> getAllEvents(){
+        return null;
+    }
+
     private ReserveTicketResponse map(Attendee attendee, Event event) {
         ReserveTicketResponse response = modelMapper.map(attendee, ReserveTicketResponse.class);
         response.setStartDate(event.getStartDate());
